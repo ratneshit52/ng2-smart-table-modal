@@ -1,0 +1,7 @@
+<div>
+  <ul>
+    <li *ngFor="let orderRequest of orderRequests">{{orderRequest.fullname}} | {{orderRequest.location}}</li>
+  </ul>
+</div>
+<button type="button" class="btn btn-default" (click)="open()">Open me!</button>
+<mm-modal></mm-modal>
