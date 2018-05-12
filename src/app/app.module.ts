@@ -1,8 +1,7 @@
 import {NgModule} from '@angular/core';
 import {BrowserModule} from '@angular/platform-browser';
 import { HttpModule } from '@angular/http';
-import { FormsModule } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import {NavigateComponent} from './nav/navigate.component';
 import {AppComponent} from './app-root/app.component';
@@ -19,6 +18,7 @@ import { BsModalModule } from 'ng2-bs3-modal';
 
 import{ButtonRenderComponent} from './button/button-render.component';
 import {ImageRenderComponent} from './services/image-render.component';
+import { FilterComponent } from './filter/filter.component';
 
 @NgModule({
   imports: [ BrowserModule,
@@ -35,7 +35,8 @@ import {ImageRenderComponent} from './services/image-render.component';
   EditModalComponent,
   NavigateComponent,
   ButtonRenderComponent,
-  ImageRenderComponent],
+  ImageRenderComponent,
+  FilterComponent],
   entryComponents: [
     ButtonRenderComponent, 
     ImageRenderComponent],

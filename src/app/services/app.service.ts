@@ -8,7 +8,7 @@ import 'rxjs/add/operator/toPromise';
 export class AppService {
 
   private headers = new Headers({ 'Content-Type': 'application/json' });
-  private url = 'http://localhost:3000/dataContent';  // URL to web api
+  private url = 'https://cbseventmanagement-api-dot-thermal-wonder-200107.appspot.com/api/User/Get';  // URL to web api
   private data: any;
 
   constructor(private http: Http) { }
@@ -19,6 +19,12 @@ export class AppService {
 
   public getDetails() {
     return this.data;
+  }
+
+  getAllData(url){
+    return this.http.get(url)
+        .map(data => data.json())
+        .catch((err) => err);
   }
 
   getOrderRequests(): Promise<OrderRequest[]> {
@@ -37,7 +43,7 @@ export class AppService {
   }
 
   update(orderRequest: OrderRequest): Promise<OrderRequest> {
-    const url = `${this.url}/${orderRequest.id}`;
+    const url = `${this.url}/${orderRequest.userName}`;
     return this.http
       .put(url, JSON.stringify(orderRequest), { headers: this.headers })
       .toPromise()
@@ -46,7 +52,7 @@ export class AppService {
   }
 
   delete(orderRequest: OrderRequest): Promise<void> {
-    const url = `${this.url}/${orderRequest.id}`;
+    const url = `${this.url}/${orderRequest.userName}`;
     return this.http.delete(url,{ headers: this.headers })
       .toPromise()
       .then(() => null)

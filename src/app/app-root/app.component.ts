@@ -1,11 +1,12 @@
 import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
 import { Http } from '@angular/http';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
-import { Ng2SmartTableModule, ServerDataSource } from 'ng2-smart-table';
+import { Ng2SmartTableModule, ServerDataSource, LocalDataSource } from 'ng2-smart-table';
 import {AppService} from '../services/app.service';
 import { CreateModalComponent } from '../modal/create-modal.component';
 import { EditModalComponent } from '../edit/edit-modal.component';
 import { BsModalModule } from 'ng2-bs3-modal';
+import { FilterComponent } from "../filter/filter.component"
 import {ButtonRenderComponent} from '../button/button-render.component';
 import {ImageRenderComponent} from '../services/image-render.component';
 import {OrderRequest} from '../services/order-request';
@@ -16,10 +17,10 @@ import {OrderRequest} from '../services/order-request';
 })
 
 export class AppComponent implements OnInit {
-  source: ServerDataSource;
+  source: LocalDataSource;
   orderRequests: OrderRequest[];
   customers: FormGroup;
-  url: string = "http://localhost:3000/dataContent";
+  url: string = "https://cbseventmanagement-api-dot-thermal-wonder-200107.appspot.com/api/User/Get";
   
   @ViewChild(CreateModalComponent)
   modalHtml: CreateModalComponent;
@@ -29,79 +30,102 @@ export class AppComponent implements OnInit {
   
   settings = {
     mode: 'external',
-    actions: {
-      columnTitle: 'Actions'
+    "actions": {
+        "add": true,
+        "position": "right"
     },
-  columns: {
-    id: {
-      title: 'ID',
-      filter: false
+    "edit": {
+        "inputClass": "form-control input-sm",
+        "editButtonContent": "<img src='../../../../assets/images/edit.png'>",
+        "saveButtonContent": "<i class='glyphicon glyphicon-ok' aria-hidden='true'></i>",
+        "cancelButtonContent": "<i class='glyphicon glyphicon-remove' aria-hidden='true'></i>",
+        "confirmSave": true
     },
-    name: {
-      title: 'Name',
-      filter: false
+    "delete": {
+        "deleteButtonContent": "<img src='../../../../assets/images/delete.png'>",
+        "confirmDelete": true
     },
-    username: {
-      title: 'User Name',
-      filter: false
+    "add": {
+        "inputClass": "form-control input-sm",
+        "addButtonContent": "<label class='label label-info'>Create User</label>",
+        "createButtonContent": "<i class='glyphicon glyphicon-pencil' aria-hidden='true'></i>",
+        "cancelButtonContent": "<i class='glyphicon glyphicon-remove' aria-hidden='true'></i>",
+        "confirmCreate": true
     },
-    email: {
-      title: 'Email',
-      filter: false
+    "columns": {
+        "userName": {
+            "title": "AD ID",
+        },
+        "firstName": {
+            "title": "FIRST NAME"
+        },
+        "lastName": {
+            "title": "LAST NAME"
+        },
+        "userRole": {
+            "title": "ROLE"
+      },
+      "stationList": {
+        "title": "STATIONS",
+        "class": "stationClass"
+      }
     },
-    address: {
-      title: 'Address',
-      filter: false
+    "orderby": {
+        "title": "userName",
+        "filter": true
     },
-    phone: {
-      title: 'Phone',
-      filter: false
-    },
-    website: {
-      title: 'Website',
-      filter: false
-    },
-    company: {
-      title: 'Copmany',
-      filter: false
+    "filter": false,
+    "attr": {
+        "class": "table table-striped table-bordered table-font-normal"
     }
-  }
 };
 
   constructor(private appService: AppService, private fb: FormBuilder, private http: Http) {
-    this.source  = new ServerDataSource(http, { endPoint: this.url})
-    this.getOrderRequests();
+    this.source  = new LocalDataSource();
+    this.appService.getAllData(this.url).toPromise().then((data: any) => {
+      console.log(data);
+      debugger;
+      this.source.load(data);
+    })
   }
+  
   
   ngOnInit() {
     this.customers = this.fb.group({
-      id: [''],
-      name: [''],
-      username: [''],
-      email: [''],
-      address: [''],
-      phone: [''],
-      website: [''],
-      company: ['']
+      userName: [''],
+      firstName: [''],
+      lastName: [''],
+      userRole: [''],
+      stations: ['']
     });
   }
   
-  onSearch(query: string = '') {
-        this.source.setFilter([
-            // fields we want to include in the search
-            {
-                field: 'name',
-                search: query
-            },
-            {
-                field: 'username',
-                search: query
-            },
-            {
-                field: 'email',
-                search: query
-            }
-        ], false);
+  onSearch(query: any) {
+    console.log(query);
+    debugger;
+    if(!query){
+      this.source.setFilter([])
+    } else {
+          this.source.setFilter([
+              {
+                  field: 'userName',
+                  search: query.userName ? query.userName : ""
+              },
+              {
+                  field: 'firstName',
+                  search: query.firstName ? query.firstName : ""
+              },
+              {
+                  field: 'lastName',
+                  search: query.lastName ? query.lastName : ""
+              },
+              {
+                  field: 'userRole',
+                  search: query.userRole ? query.userRole : ""
+              }
+          ], false,
+        );
+      }
     }
   
   getOrderRequests() {

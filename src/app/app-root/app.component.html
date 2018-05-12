@@ -1,4 +1,5 @@
-<input #search class="search form-control" type="text" placeholder="Search..." (keydown.enter)="onSearch(search.value)">
+<!-- <input #search class="search form-control" type="text" placeholder="Search..." (keydown.enter)="onSearch(search.value)"> -->
+<app-filter (fieldSearch)="onSearch($event)"></app-filter>
 <ng2-smart-table [settings]="settings" [source]="source" (create)="onCreate($event)" (delete)="onDelete($event)" (edit)="onSave($event)"></ng2-smart-table>
 <mm-create-modal></mm-create-modal>
 <mm-edit-modal></mm-edit-modal>

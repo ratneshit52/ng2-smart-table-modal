@@ -1,0 +1,27 @@
+<div class="panel panel-info">
+  <div class="panel-heading">
+    Serach Field
+  </div>
+  <form [formGroup]="submitValue" (ngSubmit)="postValue(submitValue.value)">
+    <div class="panel-body form-inline">
+      <div class="row">
+          <div class="form-group col-xs-4 text-right">
+              <label for="username" style="font-weight:unset">AD ID</label>
+              <input type="text" autofocus class="form-control" formControlName="userName" id="username">
+          </div>
+          <div class="form-group col-xs-4 text-right">
+              <label for="firstname" style="font-weight:unset">First Name</label>
+              <input type="text" class="form-control" formControlName="firstName" id="firstName">
+          </div>
+          <div class="form-group col-xs-4 text-right">
+              <label for="lastname" style="font-weight:unset">Last Name</label>
+              <input type="text" class="form-control" formControlName="lastName" id="lastName">
+          </div>
+      </div>
+    </div>
+    <div class="panel-footer">
+      <button type="submit" class="btn btn-info">Submit Form</button>
+      <button type="reset" class="btn btn-worning" (click)="onRest()">Reset</button>
+    </div>
+  </form>
+</div>
