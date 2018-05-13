@@ -1,4 +1,4 @@
-import {Component, NgModule, OnInit, ViewChild} from '@angular/core';
+import {Component, NgModule, OnInit, ViewChild, AfterViewInit} from '@angular/core';
 import { Http } from '@angular/http';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import { Ng2SmartTableModule, ServerDataSource, LocalDataSource } from 'ng2-smart-table';
@@ -10,16 +10,18 @@ import { FilterComponent } from "../filter/filter.component"
 import {ButtonRenderComponent} from '../button/button-render.component';
 import {ImageRenderComponent} from '../services/image-render.component';
 import {OrderRequest} from '../services/order-request';
+declare const $;
 
 @Component({
   selector: 'my-app',
   templateUrl: 'app.component.html',
 })
 
-export class AppComponent implements OnInit {
+export class AppComponent implements OnInit, AfterViewInit {
   source: LocalDataSource;
   orderRequests: OrderRequest[];
   customers: FormGroup;
+  hideColCount: any;
   url: string = "https://cbseventmanagement-api-dot-thermal-wonder-200107.appspot.com/api/User/Get";
   
   @ViewChild(CreateModalComponent)
@@ -86,9 +88,43 @@ export class AppComponent implements OnInit {
       console.log(data);
       debugger;
       this.source.load(data);
+      this.source.reset();
+      this.tableColHide(this.hideColCount);
     })
   }
   
+
+  ngAfterViewInit(){
+    this.hideColumn("stationClass");
+  }
+
+  hideColumn(className: string){
+    let machCount = [];
+    let colCount = 0;
+    $('ng2-smart-table table tr:nth-child(1) th').each(function () {
+        console.log($(this).hasClass(className));
+        if ($(this).attr('colspan')) {
+            colCount += +$(this).attr('colspan');
+            if($(this).hasClass(className)){
+                machCount.push(colCount);
+            }
+        } else {
+            colCount++;
+            if($(this).hasClass(className)){
+                machCount.push(colCount);
+            }
+        }
+
+    });
+    this.hideColCount = machCount;
+  }
+
+  tableColHide(hideVal: any[]){
+    for(let i = 0; i < hideVal.length; i++){
+        $('ng2-smart-table thead th:nth-child('+ hideVal[i] +')').css('display', 'none');
+        $('ng2-smart-table tbody td:nth-child('+ hideVal[i] +')').css('display', 'none');
+    }
+  }
   
   ngOnInit() {
     this.customers = this.fb.group({
